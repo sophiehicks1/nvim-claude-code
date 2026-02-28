@@ -125,21 +125,27 @@ async def get_current_buffer() -> dict:
     return await client.run(_work)
 
 
+def _get_buffer_by_number(nvim, bufnr: int):
+    """Validate that bufnr exists and is listed, then return the buffer object."""
+    if not nvim.call("bufexists", bufnr):
+        raise ValueError(f"Buffer {bufnr} does not exist")
+    if not nvim.call("buflisted", bufnr):
+        raise ValueError(f"Buffer {bufnr} is not listed")
+    return nvim.buffers[bufnr]
+
+
 @mcp.tool()
-async def get_buffer_content(path: str) -> dict:
-    """Get the full content of a buffer identified by its file path. Errors if the file isn't open."""
+async def get_buffer_content(bufnr: int) -> dict:
+    """Get the full content of a buffer identified by its buffer number. Use list_nvim_buffers to find buffer numbers."""
     def _work(nvim):
-        norm = os.path.abspath(path)
-        for buf in nvim.buffers:
-            buf_name = buf.name or ""
-            if os.path.abspath(buf_name) == norm:
-                content = "\n".join(buf[:])
-                return {
-                    "path": buf.name,
-                    "line_count": len(buf),
-                    "content": content,
-                }
-        raise ValueError(f"No buffer is open for path: {path}")
+        buf = _get_buffer_by_number(nvim, bufnr)
+        content = "\n".join(buf[:])
+        return {
+            "bufnr": buf.number,
+            "path": buf.name or "(unnamed)",
+            "line_count": len(buf),
+            "content": content,
+        }
     return await client.run(_work)
 
 
@@ -189,6 +195,54 @@ async def open_new_buffer(path: str, proposed_content: str) -> str:
         buf.options["modified"] = True
         nvim.command("tabprevious")
         return f"New buffer opened in background tab for {path} ({len(lines)} lines). Use :w to save."
+    return await client.run(_work)
+
+
+# ---------------------------------------------------------------------------
+# Annotation tools
+# ---------------------------------------------------------------------------
+
+def _lua_plugin_available(nvim) -> bool:
+    """Check if the claudecode Lua plugin is loaded."""
+    try:
+        return nvim.exec_lua("return require('claudecode').is_setup()")
+    except Exception:
+        return False
+
+
+@mcp.tool()
+async def add_comment_to_buffer(bufnr: int, line_num: int, comment: str) -> str:
+    """Add a review annotation to a buffer at a specific line. Shows a 'CC' sign in the gutter.
+
+    Use this to leave review comments, suggestions, or notes on specific lines.
+    The user can view the comment by pressing their annotation keymap (default <leader>cc).
+    """
+    def _work(nvim):
+        _get_buffer_by_number(nvim, bufnr)
+        if not _lua_plugin_available(nvim):
+            return f"Annotation NOT added: claudecode Lua plugin is not loaded. Add the plugin to your Neovim config."
+        nvim.exec_lua(
+            "require('claudecode.annotations').add(...)",
+            bufnr, line_num, comment,
+        )
+        return f"Annotation added to buffer {bufnr} at line {line_num}"
+    return await client.run(_work)
+
+
+@mcp.tool()
+async def clear_annotations(bufnr: int | None = None) -> str:
+    """Clear all Claude annotations from a buffer. If bufnr is None, clears all buffers."""
+    def _work(nvim):
+        if bufnr is not None:
+            _get_buffer_by_number(nvim, bufnr)
+        if not _lua_plugin_available(nvim):
+            return "No annotations to clear: claudecode Lua plugin is not loaded."
+        nvim.exec_lua(
+            "require('claudecode.annotations').clear(...)",
+            bufnr,
+        )
+        scope = f"buffer {bufnr}" if bufnr else "all buffers"
+        return f"Annotations cleared from {scope}"
     return await client.run(_work)
 
 
