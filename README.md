@@ -7,7 +7,7 @@ MCP server + Neovim plugin for Claude Code integration. Lets Claude read your bu
 ### 1. Install the MCP server
 
 ```bash
-pip install git+https://github.com/YOUR_USER/nvim-mcp-server.git
+pip install git+https://github.com/sophiehicks1/nvim-mcp-server.git
 ```
 
 Or for development:
@@ -23,7 +23,7 @@ pip install -e .
 
 ```lua
 {
-  "YOUR_USER/nvim-mcp-server",
+  "sophiehicks1/nvim-mcp-server",
   config = function()
     require("claudecode").setup({
       -- default_dir = nil,  -- defaults to getcwd()
@@ -37,11 +37,29 @@ pip install -e .
 }
 ```
 
+**vim-plug:**
+
+```vim
+Plug 'sophiehicks1/nvim-mcp-server'
+
+" After plug#end(), add to your init.vim:
+lua << EOF
+require("claudecode").setup({
+  default_dir = "~/projects",
+  keymaps = {
+    annotation_show = "<leader>ca",
+    compose_open = "<leader>co",
+    send_selection = "<leader>cs",
+  },
+})
+EOF
+```
+
 **packer.nvim:**
 
 ```lua
 use {
-  "YOUR_USER/nvim-mcp-server",
+  "sophiehicks1/nvim-mcp-server",
   config = function()
     require("claudecode").setup()
   end,
