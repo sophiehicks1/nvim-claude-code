@@ -14,13 +14,14 @@ client = NvimClient()
 # Helpers (run inside the background thread via client.run)
 # ---------------------------------------------------------------------------
 
-def _buffer_info(buf, current_buf_number: int) -> dict:
+def _buffer_info(buf, current_buf_number: int, alternate_buf_number: int) -> dict:
     """Extract metadata from a Neovim buffer object."""
     return {
         "number": buf.number,
         "name": buf.name or "(unnamed)",
         "modified": buf.options["modified"],
         "is_current": buf.number == current_buf_number,
+        "is_alternate": buf.number == alternate_buf_number,
         "line_count": len(buf),
     }
 
@@ -93,14 +94,15 @@ async def open_buffers_resource() -> str:
 
 @mcp.tool()
 async def list_nvim_buffers() -> list[dict]:
-    """List open Neovim buffers with number, path, modified status, is_current, and line_count."""
+    """List open Neovim buffers with number, path, modified status, is_current, is_alternate, and line_count."""
     def _work(nvim):
         current_nr = nvim.current.buffer.number
+        alternate_nr = nvim.call("bufnr", "#")
         result = []
         for buf in nvim.buffers:
             if not buf.options.get("buflisted", True):
                 continue
-            result.append(_buffer_info(buf, current_nr))
+            result.append(_buffer_info(buf, current_nr, alternate_nr))
         return result
     return await client.run(_work)
 
