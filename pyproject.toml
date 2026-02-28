@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nvim-mcp-server"
+version = "0.1.0"
+description = "MCP server for interacting with a running Neovim instance"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "pynvim>=0.5.0",
+]
+
+[project.scripts]
+nvim-mcp-server = "nvim_mcp_server.server:main"
