@@ -163,12 +163,13 @@ async def open_diff_view(file_path: str, proposed_content: str) -> str:
 
     def _work(nvim):
         escaped = nvim.call("fnameescape", file_path)
-        nvim.command(f"edit {escaped}")
+        nvim.command(f"tabedit {escaped}")
         tmp_escaped = nvim.call("fnameescape", tmp_path)
         nvim.command(f"vert diffsplit {tmp_escaped}")
         nvim.command("setlocal buftype=nofile bufhidden=wipe noswapfile")
         nvim.command(f"autocmd BufWipeout <buffer> silent! call delete('{tmp_path}')")
-        return f"Diff view opened for {file_path}. Left=original, right=proposed. Close the proposed pane to clean up."
+        nvim.command("tabprevious")
+        return f"Diff view opened in background tab for {file_path}. Left=original, right=proposed. Close the proposed pane to clean up."
 
     return await client.run(_work)
 
@@ -181,12 +182,13 @@ async def open_new_buffer(path: str, proposed_content: str) -> str:
     """
     def _work(nvim):
         escaped = nvim.call("fnameescape", path)
-        nvim.command(f"edit {escaped}")
+        nvim.command(f"tabedit {escaped}")
         buf = nvim.current.buffer
         lines = proposed_content.split("\n")
         buf[:] = lines
         buf.options["modified"] = True
-        return f"New buffer opened for {path} ({len(lines)} lines). Use :w to save."
+        nvim.command("tabprevious")
+        return f"New buffer opened in background tab for {path} ({len(lines)} lines). Use :w to save."
     return await client.run(_work)
 
 
