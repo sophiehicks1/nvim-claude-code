@@ -35,6 +35,7 @@ function M.show_popup(bufnr, line_num)
   local annotations = vim.b[bufnr].claudecode_annotations or {}
   local comment = annotations[tostring(line_num)]
   if not comment then
+
     vim.notify("No Claude annotation on this line", vim.log.levels.INFO)
     return
   end
@@ -50,7 +51,7 @@ function M.show_popup(bufnr, line_num)
   vim.api.nvim_buf_set_lines(popup_buf, 0, -1, false, lines)
   vim.bo[popup_buf].modifiable = false
 
-  local win = vim.api.nvim_open_win(popup_buf, true, {
+  local win = vim.api.nvim_open_win(popup_buf, false, {
     relative = "cursor",
     row = 1,
     col = 0,
@@ -63,7 +64,6 @@ function M.show_popup(bufnr, line_num)
 
   -- Close on any movement
   vim.api.nvim_create_autocmd({ "CursorMoved", "BufLeave", "InsertEnter" }, {
-    buffer = popup_buf,
     once = true,
     callback = function()
       if vim.api.nvim_win_is_valid(win) then
