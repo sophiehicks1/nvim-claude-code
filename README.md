@@ -120,6 +120,7 @@ Press `<leader>co` to open a small scratch buffer. Type your message, then press
 | `get_buffer_content(bufnr)` | Get full content of a buffer by number |
 | `open_diff_view(file_path, proposed_content)` | Open diff split with proposed changes |
 | `open_new_buffer(path, proposed_content)` | Open new buffer with content for review |
+| `open_existing_file(path)` | Open existing file in a background tab for review |
 | `add_comment_to_buffer(bufnr, line_num, comment)` | Add annotation at a line |
 | `clear_annotations(bufnr)` | Clear annotations from buffer(s) |
 

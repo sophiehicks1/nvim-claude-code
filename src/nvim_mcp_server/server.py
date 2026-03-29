@@ -200,6 +200,19 @@ async def open_new_buffer(path: str, proposed_content: str) -> str:
     return await client.run(_work)
 
 
+@mcp.tool()
+async def open_existing_file(path: str) -> str:
+    """Open the given file in a background tab for the user to review.
+    """
+    def _work(nvim):
+        escaped = nvim.call("fnameescape", path)
+        nvim.command(f"tabedit {escaped}")
+        buf = nvim.current.buffer
+        nvim.command("tabprevious")
+        return f"New buffer opened in background tab for {path}."
+    return await client.run(_work)
+
+
 # ---------------------------------------------------------------------------
 # Annotation tools
 # ---------------------------------------------------------------------------
