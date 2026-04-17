@@ -6,7 +6,9 @@ function! claudecode#commands#register(config) abort
           \ ' :call claudecode#annotations#show_popup(bufnr(), line("."))<CR>'
   endif
 
-  command! -nargs=? -complete=dir ClaudeCode call claudecode#terminal#open(<q-args>)
+  if get(a:config, 'ex_command')
+    command! -nargs=? -complete=dir ClaudeCode call claudecode#terminal#open(<q-args>)
+  endif
 
   if get(keymaps, 'compose_open', '') !=# ''
     execute 'nnoremap ' . keymaps.compose_open .

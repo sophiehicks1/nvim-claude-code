@@ -46,6 +46,7 @@ Plug 'sophiehicks1/nvim-mcp-server'
 lua << EOF
 require("claudecode").setup({
   default_dir = "~/projects",
+  'ex_command' = true,
   keymaps = {
     annotation_show = "<leader>ca",
     compose_open = "<leader>co",
