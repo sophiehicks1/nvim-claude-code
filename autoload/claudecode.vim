@@ -20,7 +20,7 @@ function! claudecode#setup(opts) abort
     let s:config.default_dir = a:opts.default_dir
   endif
   if has_key(a:opts, 'ex_command')
-    let s:config.ex_command a:opts.ex_command
+    let s:config.ex_command = a:opts.ex_command
   endif
   if has_key(a:opts, 'keymaps')
     call extend(s:config.keymaps, a:opts.keymaps)
