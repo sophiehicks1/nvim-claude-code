@@ -1,21 +1,14 @@
-let s:did_setup = 0
-
 let s:config = {
       \ 'default_dir': v:null,
       \ 'ex_command': v:true,
       \ 'keymaps': {
-      \   'annotation_show': '<leader>cc',
-      \   'compose_open': '<leader>co',
-      \   'send_selection': '<leader>cs',
+      \   'annotation_show': '',
+      \   'compose_open': '',
+      \   'send_selection': '',
       \ }
       \ }
 
 function! claudecode#setup(opts) abort
-  if s:did_setup
-    return
-  endif
-  let s:did_setup = 1
-
   if has_key(a:opts, 'default_dir')
     let s:config.default_dir = a:opts.default_dir
   endif
@@ -31,10 +24,6 @@ function! claudecode#setup(opts) abort
   highlight default link ClaudeCodePopupBorder FloatBorder
 
   call claudecode#commands#register(s:config)
-endfunction
-
-function! claudecode#is_setup() abort
-  return s:did_setup
 endfunction
 
 function! claudecode#config() abort

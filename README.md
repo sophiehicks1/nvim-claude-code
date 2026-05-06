@@ -100,13 +100,15 @@ Add to `~/.claude/settings.json`:
 | `:ClaudeCode [dir]` | Open Claude Code in a terminal split |
 | `:checkhealth claudecode` | Run health checks |
 
-### Keymaps (defaults)
+### Keymaps
 
-| Keymap | Mode | Description |
-|--------|------|-------------|
-| `<leader>cc` | Normal | Show Claude annotation at cursor |
-| `<leader>co` | Normal | Open compose buffer to send message to Claude |
-| `<leader>cs` | Visual | Send selection to Claude terminal |
+All keymaps are off by default
+
+  | Name              | Mode   | Description                                   |
+  | ----              | ------ | -------------                                 |
+  | `show_annotation` | Normal | Show Claude annotation at cursor              |
+  | `compose_open`    | Normal | Open compose buffer to send message to Claude |
+  | `send_selection`  | Visual | Send selection to Claude terminal             |
 
 ### Compose buffer
 
