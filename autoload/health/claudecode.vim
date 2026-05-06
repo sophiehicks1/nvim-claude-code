@@ -7,12 +7,6 @@ function! health#claudecode#check() abort
     call health#report_warn('Neovim >= 0.10 recommended for full feature support')
   endif
 
-  if claudecode#is_setup()
-    call health#report_ok('Plugin is set up')
-  else
-    call health#report_error('Plugin not set up. Call claudecode#setup({}) or ensure plugin/ is in runtimepath')
-  endif
-
   if executable('nvim-mcp-server')
     call health#report_ok('nvim-mcp-server executable found')
   else

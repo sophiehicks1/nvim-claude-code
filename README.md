@@ -1,6 +1,6 @@
 # nvim-mcp-server
 
-MCP server + Neovim plugin for Claude Code integration. Lets Claude read your buffers, open diffs, leave annotations, and run inside a Neovim terminal.
+MCP server + Neovim plugin for Claude Code integration. Lets Claude read your buffers, open diffs and add annotations.
 
 ## Installation
 
@@ -26,11 +26,8 @@ pip install -e .
   "sophiehicks1/nvim-mcp-server",
   config = function()
     require("claudecode").setup({
-      -- default_dir = nil,  -- defaults to getcwd()
       -- keymaps = {
       --   annotation_show = "<leader>cc",
-      --   compose_open = "<leader>co",
-      --   send_selection = "<leader>cs",
       -- },
     })
   end,
@@ -45,12 +42,8 @@ Plug 'sophiehicks1/nvim-mcp-server'
 " After plug#end(), add to your init.vim:
 lua << EOF
 require("claudecode").setup({
-  default_dir = "~/projects",
-  'ex_command' = true,
   keymaps = {
     annotation_show = "<leader>ca",
-    compose_open = "<leader>co",
-    send_selection = "<leader>cs",
   },
 })
 EOF
@@ -97,7 +90,6 @@ Add to `~/.claude/settings.json`:
 
 | Command | Description |
 |---------|-------------|
-| `:ClaudeCode [dir]` | Open Claude Code in a terminal split |
 | `:checkhealth claudecode` | Run health checks |
 
 ### Keymaps
@@ -107,12 +99,6 @@ All keymaps are off by default
   | Name              | Mode   | Description                                   |
   | ----              | ------ | -------------                                 |
   | `show_annotation` | Normal | Show Claude annotation at cursor              |
-  | `compose_open`    | Normal | Open compose buffer to send message to Claude |
-  | `send_selection`  | Visual | Send selection to Claude terminal             |
-
-### Compose buffer
-
-Press `<leader>co` to open a small scratch buffer. Type your message, then press `<Enter>` in normal mode to send it to the Claude terminal. Press `q` to cancel.
 
 ### MCP Tools (used by Claude)
 

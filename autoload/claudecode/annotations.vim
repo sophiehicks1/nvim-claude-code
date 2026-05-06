@@ -1,7 +1,11 @@
 let s:popup_winid = -1
 
+function! s:namespace() abort
+  return nvim_create_namespace('claudecode')
+endfunction
+
 function! claudecode#annotations#add(bufnr, line_num, comment) abort
-  let ns = claudecode#utils#namespace()
+  let ns = s:namespace()
   let annotations = getbufvar(a:bufnr, 'claudecode_annotations', {})
 
   call nvim_buf_set_extmark(a:bufnr, ns, a:line_num - 1, 0, {
@@ -57,7 +61,7 @@ function! claudecode#annotations#close_popup() abort
 endfunction
 
 function! claudecode#annotations#clear(bufnr) abort
-  let ns = claudecode#utils#namespace()
+  let ns = s:namespace()
   if a:bufnr >= 0
     call nvim_buf_clear_namespace(a:bufnr, ns, 0, -1)
     call setbufvar(a:bufnr, 'claudecode_annotations', v:null)
