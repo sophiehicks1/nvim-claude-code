@@ -183,6 +183,26 @@ async def open_diff_view(file_path: str, proposed_content: str) -> str:
 
 
 @mcp.tool()
+async def open_existing_file(path: str) -> str:
+    """Open an already-saved file in the user's Neovim instance in a background tab.
+
+    Use this after writing content to disk that the user should see immediately
+    (e.g. research reports, reference material). The file must already exist on disk.
+    """
+    def _work(nvim):
+        expanded = os.path.expanduser(path)
+        if not os.path.isfile(expanded):
+            return f"File not found: {expanded}"
+        escaped = nvim.call("fnameescape", expanded)
+        nvim.command(f"tabedit {escaped}")
+        buf = nvim.current.buffer
+        line_count = len(buf)
+        nvim.command("tabprevious")
+        return f"Opened {path} in background tab ({line_count} lines)."
+    return await client.run(_work)
+
+
+@mcp.tool()
 async def open_new_buffer(path: str, proposed_content: str) -> str:
     """Open a new buffer with the given path and content for the user to review and save.
 
