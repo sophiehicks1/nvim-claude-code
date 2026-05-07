@@ -219,10 +219,8 @@ async def open_existing_file(path: str) -> str:
 
 def _lua_plugin_available(nvim) -> bool:
     """Check if the claudecode Lua plugin is loaded."""
-    try:
-        return nvim.exec_lua("return require('claudecode').is_setup()")
-    except Exception:
-        return False
+    loaded = nvim.eval("get(g:, 'loaded_claudecode', 0)")
+    return bool(loaded)
 
 
 @mcp.tool()
