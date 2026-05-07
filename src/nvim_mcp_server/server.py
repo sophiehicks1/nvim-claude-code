@@ -234,10 +234,7 @@ async def add_comment_to_buffer(bufnr: int, line_num: int, comment: str) -> str:
         _get_buffer_by_number(nvim, bufnr)
         if not _lua_plugin_available(nvim):
             return f"Annotation NOT added: claudecode Lua plugin is not loaded. Add the plugin to your Neovim config."
-        nvim.exec_lua(
-            "require('claudecode.annotations').add(...)",
-            bufnr, line_num, comment,
-        )
+        nvim.call("claudecode#annotations#add", bufnr, line_num, comment,)
         return f"Annotation added to buffer {bufnr} at line {line_num}"
     return await client.run(_work)
 
@@ -251,7 +248,7 @@ async def clear_annotations(bufnr: int | None = None) -> str:
         if not _lua_plugin_available(nvim):
             return "No annotations to clear: claudecode Lua plugin is not loaded."
         nvim.exec_lua(
-            "require('claudecode.annotations').clear(...)",
+            "claudecode#annotations#clear",
             bufnr,
         )
         scope = f"buffer {bufnr}" if bufnr else "all buffers"
